@@ -7,6 +7,7 @@ import Link from 'next/link'
 import { UpdatePay, DeletePay } from '@/app/ui/pays/buttons'
 import { fetchFilteredPays } from '@/app/lib/data'
 import { formatCurrency } from '@/app/lib/utils'
+import { Console } from 'console';
 
 export interface PaysTableRow {
   id: string
@@ -44,7 +45,7 @@ export default async function PaysTable({
     status:      p.status as 'paid' | 'pending',
     description: p.description,
   }))
-
+console.log('pays'+pays)
   return (
     <div className="mt-6 flow-root">
       <div className="inline-block min-w-full align-middle">

@@ -78,7 +78,11 @@ export default function EditPayForm({
             name="date"
             type="datetime-local"
             required
-            defaultValue={new Date(pay.date).toISOString().slice(0, 16)}
+            defaultValue={(() => {
+              const d = new Date(pay.date)
+              const local = new Date(d.getTime() - d.getTimezoneOffset() * 60000)
+              return local.toISOString().slice(0, 16)
+            })()}
             className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm outline-2"
           />
         </div>

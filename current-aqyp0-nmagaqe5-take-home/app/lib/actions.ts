@@ -43,6 +43,7 @@ export async function createPay(formData: FormData) {
     pays.push(newPay)
     revalidatePath('/dashboard/pays')
     revalidatePath('/dashboard')
+    redirect('/dashboard/pays')
   } catch (error) {
     console.error('CreatePay Error:', error)
     throw error
@@ -57,6 +58,8 @@ export async function deletePay(formData: FormData) {
 
   // Revalidate the pays list page
   revalidatePath('/dashboard/pays')
+
+  redirect('/dashboard/pays')
 }
 
 export async function updatePay(formData: FormData) {
