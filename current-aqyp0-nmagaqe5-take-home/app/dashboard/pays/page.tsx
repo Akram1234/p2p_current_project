@@ -6,17 +6,15 @@ import { CreatePay } from '@/app/ui/pays/buttons';
 import { lusitana } from '@/app/ui/fonts';
 import { PaysTableSkeleton } from '@/app/ui/skeletons';
 import { Suspense } from 'react';
+type SearchParams = { query?: string; page?: string }
 
 export default async function Page({
     searchParams,
 }: {
-    searchParams?: {
-        query?: string;
-        page?: string;
-    }
-}) {
-    const query = searchParams?.query || '';
-    const currentPage = Number(searchParams?.page) || 1;
+  searchParams: SearchParams | Promise<SearchParams>
+}){
+    const { query = '', page = '1' } = await searchParams
+    const currentPage = Number(page) || 1
 
     const totalPages = await fetchPaysPages(query);
 

@@ -1,7 +1,7 @@
 import { Activity } from './definitions';
 
 export const formatCurrency = (amount: number) => {
-  return (amount / 100).toLocaleString('en-US', {
+  return (amount).toLocaleString('en-US', {
     style: 'currency',
     currency: 'USD',
   });
@@ -22,18 +22,19 @@ export const formatDateToLocal = (
 };
 
 export const generateYAxis = (activity: Activity[]) => {
-  // Calculate what labels we need to display on the y-axis
-  // based on highest record and in 1000s
-  const yAxisLabels = [];
-  const highestRecord = Math.max(...activity.map((month) => month.activity));
-  const topLabel = Math.ceil(highestRecord / 1000) * 1000;
+  const yAxisLabels: string[] = []
 
-  for (let i = topLabel; i >= 0; i -= 1000) {
-    yAxisLabels.push(`$${i / 1000}K`);
+  const highestRecord = Math.max(...activity.map((m) => m.activity))
+
+  const topLabel = highestRecord
+
+  for (let value = topLabel; value >= 0; value -= 1_000) {
+    const label = `${(value)}`
+    yAxisLabels.push(`${label}`)
   }
 
-  return { yAxisLabels, topLabel };
-};
+  return { yAxisLabels, topLabel }
+}
 
 export const generatePagination = (currentPage: number, totalPages: number) => {
   // If the total number of pages is 7 or less,

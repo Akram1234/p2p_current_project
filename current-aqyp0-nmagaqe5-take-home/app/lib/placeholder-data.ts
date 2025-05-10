@@ -1,3 +1,4 @@
+import type { Contact, Pay, Activity } from './definitions'
 // This file contains placeholder data that you'll be replacing with real data in the Data Fetching chapter:
 // https://nextjs.org/learn/dashboard-app/fetching-data
 const users = [
@@ -48,23 +49,88 @@ const contacts = [
   },
 ];
 
+
+function randomInt(min: number, max: number): number {
+  return Math.floor(Math.random() * (max - min + 1)) + min
+}
+
+function randomDate(): Date {
+  const now = new Date()
+
+  // compute the start of *today* (midnight)
+  const startOfToday = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate(),
+    0, 0, 0, 0
+  )
+
+  // compute exactly one year before that
+  const oneYearAgo = new Date(startOfToday)
+  oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1)
+
+  // our upper bound is the millisecond just before today
+  const endOfYesterday = startOfToday.getTime() - 1
+
+  // pick a random timestamp in [oneYearAgo, endOfYesterday]
+  const ts = randomInt(oneYearAgo.getTime(), endOfYesterday)
+
+  return new Date(ts)
+}
+
+export function generatePays(
+  contacts: Contact[],
+  totalCount = 500   // or however many you want in your 12‑month window
+): Pay[] {
+  const pays: Pay[] = []
+  const statuses: Pay['status'][] = ['completed', 'pending', 'failed']
+  const descriptions = ['Rent', 'Utilities', 'Dinner', 'Gift', 'Subscription']
+
+  for (let i = 1; i <= totalCount; i++) {
+    // pick two different contacts
+    const sender   = contacts[randomInt(0, contacts.length - 1)]
+    let receiver   = contacts[randomInt(0, contacts.length - 1)]
+    while (receiver.id === sender.id) {
+      receiver = contacts[randomInt(0, contacts.length - 1)]
+    }
+
+    const d = randomDate()
+
+    pays.push({
+      id:          String(i),
+      senderId:    sender.id,
+      receiverId:  receiver.id,
+      amount:      parseFloat((Math.random() * 500).toFixed(2)),
+      date:        d.toISOString(),
+      status:      statuses[randomInt(0, statuses.length - 1)],
+      description: Math.random() < 0.3
+        ? descriptions[randomInt(0, descriptions.length - 1)]
+        : undefined,
+    })
+  }
+
+  return pays
+}
 // TODO: Generate a years worth of random pays using the contacts above
-const pays = [];
+declare global {
+  // eslint-disable-next-line no-var
+  var __P2P_PAYS__: Pay[] | undefined
+}
+//  globalThis.__P2P_PAYS__ ??=
+// force the next import of placeholder‑data.ts to regenerate
+// delete globalThis.__P2P_PAYS__;
+
+const pays: Pay[] =globalThis.__P2P_PAYS__ ??=generatePays(contacts)
 
 // TODO: After you generate pays, calculate the activity for the respective months
-const activity = [
-  { month: 'Jan', activity: 2000 },
-  { month: 'Feb', activity: 1800 },
-  { month: 'Mar', activity: 2200 },
-  { month: 'Apr', activity: 2500 },
-  { month: 'May', activity: 2300 },
-  { month: 'Jun', activity: 3200 },
-  { month: 'Jul', activity: 3500 },
-  { month: 'Aug', activity: 3700 },
-  { month: 'Sep', activity: 2500 },
-  { month: 'Oct', activity: 2800 },
-  { month: 'Nov', activity: 3000 },
-  { month: 'Dec', activity: 4800 },
-];
+
+
+const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+
+const activity: Activity[] = MONTHS.map((month, idx) => {
+  // count how many pays happened in this month
+  const count = pays.filter(p => new Date(p.date).getMonth() === idx).length
+  return { month, activity: count }
+})
 
 export { users, contacts, pays, activity };

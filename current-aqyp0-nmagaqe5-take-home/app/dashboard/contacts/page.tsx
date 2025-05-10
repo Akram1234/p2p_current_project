@@ -1,19 +1,21 @@
-import Table from '@/app/ui/contacts/table';
-import { PaysTableSkeleton } from '@/app/ui/skeletons';
-import { Suspense } from 'react';
+import Table from '@/app/ui/contacts/table'
+import { PaysTableSkeleton } from '@/app/ui/skeletons'
+import { Suspense } from 'react'
 
-export default async function Page(
-    { searchParams }: { searchParams?: {
-        query?: string;
-    }
+type SearchParams = { query?: string }
+
+export default async function Page({
+  searchParams,
+}: {
+  searchParams: SearchParams | Promise<SearchParams>
 }) {
-    const query = searchParams?.query || '';
+  const { query = '' } = await searchParams
 
-    return (
-        <div className="w-full">
-            <Suspense key={query} fallback={<PaysTableSkeleton />}>
-                <Table query={query} />
-            </Suspense>
-        </div>
-    );
+  return (
+    <div className="w-full">
+      <Suspense key={query} fallback={<PaysTableSkeleton />}>
+        <Table query={query} />
+      </Suspense>
+    </div>
+  )
 }
