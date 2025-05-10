@@ -1,123 +1,145 @@
-'use client';
+// app/ui/pays/edit-form.tsx
 
-import { ContactField, PayForm } from '@/app/lib/definitions';
-import {
-  CheckIcon,
-  ClockIcon,
-  CurrencyDollarIcon,
-  UserCircleIcon,
-} from '@heroicons/react/24/outline';
-import Link from 'next/link';
-import { Button } from '@/app/ui/button';
+'use client'
+
+import { ContactField, PayForm } from '@/app/lib/definitions'
+import { CheckIcon, ClockIcon, CurrencyDollarIcon, UserCircleIcon } from '@heroicons/react/24/outline'
+import Link from 'next/link'
+import { Button } from '@/app/ui/button'
+import { updatePay } from '@/app/lib/actions'
 
 export default function EditPayForm({
   pay,
   contacts,
 }: {
-  pay: PayForm;
-  contacts: ContactField[];
+  pay: PayForm
+  contacts: ContactField[]
 }) {
   return (
-    <form>
-      <div className="rounded-md bg-gray-50 p-4 md:p-6">
-        {/* Contact Name */}
-        <div className="mb-4">
-          <label htmlFor="contact" className="mb-2 block text-sm font-medium">
-            Choose contact
+    <form action={updatePay} method="post" className="space-y-6">
+      {/* Hidden fields: id and sender */}
+      <input type="hidden" name="id" value={pay.id} />
+      <input type="hidden" name="senderId" value={pay.senderId} />
+
+      <div className="rounded-md bg-gray-50 p-4 md:p-6 space-y-4">
+        {/* Recipient */}
+        <div>
+          <label htmlFor="receiverId" className="block text-sm font-medium mb-1">
+            Choose recipient
           </label>
           <div className="relative">
             <select
-              id="contact"
-              name="contactId"
-              className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-              defaultValue={pay.contact_id}
+              id="receiverId"
+              name="receiverId"
+              required
+              defaultValue={pay.receiverId}
+              className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
             >
               <option value="" disabled>
                 Select a contact
               </option>
-              {contacts.map((contact) => (
-                <option key={contact.id} value={contact.id}>
-                  {contact.name}
+              {contacts.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.name}
                 </option>
               ))}
             </select>
-            <UserCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
+            <UserCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-500" />
           </div>
         </div>
 
-        {/* Pay Amount */}
-        <div className="mb-4">
-          <label htmlFor="amount" className="mb-2 block text-sm font-medium">
-            Choose an amount
+        {/* Amount */}
+        <div>
+          <label htmlFor="amount" className="block text-sm font-medium mb-1">
+            Amount (USD)
           </label>
-          <div className="relative mt-2 rounded-md">
-            <div className="relative">
-              <input
-                id="amount"
-                name="amount"
-                type="number"
-                step="0.01"
-                defaultValue={pay.amount}
-                placeholder="Enter USD amount"
-                className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-              />
-              <CurrencyDollarIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
-            </div>
+          <div className="relative">
+            <input
+              id="amount"
+              name="amount"
+              type="number"
+              step="0.01"
+              required
+              defaultValue={pay.amount}
+              placeholder="0.00"
+              className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+            />
+            <CurrencyDollarIcon className="pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-500" />
           </div>
         </div>
 
-        {/* Pay Status */}
+        {/* Date */}
+        <div>
+          <label htmlFor="date" className="block text-sm font-medium mb-1">
+            Date & Time
+          </label>
+          <input
+            id="date"
+            name="date"
+            type="datetime-local"
+            required
+            defaultValue={new Date(pay.date).toISOString().slice(0, 16)}
+            className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm outline-2"
+          />
+        </div>
+
+        {/* Description */}
+        <div>
+          <label htmlFor="description" className="block text-sm font-medium mb-1">
+            Description (optional)
+          </label>
+          <textarea
+            id="description"
+            name="description"
+            rows={2}
+            defaultValue={pay.description || ''}
+            placeholder="e.g. Rent, Utilities, Dinner..."
+            className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm outline-2"
+          />
+        </div>
+
+        {/* Status */}
         <fieldset>
-          <legend className="mb-2 block text-sm font-medium">
-            Set the pay status
-          </legend>
-          <div className="rounded-md border border-gray-200 bg-white px-[14px] py-3">
-            <div className="flex gap-4">
-              <div className="flex items-center">
-                <input
-                  id="pending"
-                  name="status"
-                  type="radio"
-                  value="pending"
-                  defaultChecked={pay.status === 'pending'}
-                  className="h-4 w-4 cursor-pointer border-gray-300 bg-gray-100 text-gray-600 focus:ring-2"
-                />
-                <label
-                  htmlFor="pending"
-                  className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-600"
-                >
-                  Pending <ClockIcon className="h-4 w-4" />
-                </label>
-              </div>
-              <div className="flex items-center">
-                <input
-                  id="paid"
-                  name="status"
-                  type="radio"
-                  value="paid"
-                  defaultChecked={pay.status === 'paid'}
-                  className="h-4 w-4 cursor-pointer border-gray-300 bg-gray-100 text-gray-600 focus:ring-2"
-                />
-                <label
-                  htmlFor="paid"
-                  className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-green-500 px-3 py-1.5 text-xs font-medium text-white"
-                >
-                  Paid <CheckIcon className="h-4 w-4" />
-                </label>
-              </div>
-            </div>
+          <legend className="block text-sm font-medium mb-1">Status</legend>
+          <div className="flex gap-6">
+            <label className="flex items-center cursor-pointer">
+              <input
+                type="radio"
+                name="status"
+                value="pending"
+                defaultChecked={pay.status === 'pending'}
+                className="h-4 w-4 text-gray-600 focus:ring-2"
+              />
+              <span className="ml-2 flex items-center gap-1 text-sm font-medium bg-gray-100 px-3 py-1.5 rounded-full">
+                Pending <ClockIcon className="h-4 w-4" />
+              </span>
+            </label>
+            <label className="flex items-center cursor-pointer">
+              <input
+                type="radio"
+                name="status"
+                value="completed"
+                defaultChecked={pay.status === 'completed'}
+                className="h-4 w-4 text-gray-600 focus:ring-2"
+              />
+              <span className="ml-2 flex items-center gap-1 text-sm font-medium bg-green-500 text-white px-3 py-1.5 rounded-full">
+                Completed <CheckIcon className="h-4 w-4" />
+              </span>
+            </label>
           </div>
         </fieldset>
       </div>
-      <div className="mt-6 flex justify-end gap-4">
+
+      {/* Actions */}
+      <div className="flex justify-end gap-4">
         <Link
           href="/dashboard/pays"
-          className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200"
+          className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 hover:bg-gray-200"
         >
           Cancel
         </Link>
-        <Button type="submit">Edit Pay</Button>
+        <Button type="submit">Save Changes</Button>
       </div>
     </form>
-  );
+  )
 }

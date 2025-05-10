@@ -2,14 +2,12 @@ import Table from '@/app/ui/contacts/table'
 import { PaysTableSkeleton } from '@/app/ui/skeletons'
 import { Suspense } from 'react'
 
-type SearchParams = { query?: string }
-
 export default async function Page({
   searchParams,
 }: {
-  searchParams: SearchParams | Promise<SearchParams>
+  searchParams?: Promise<{ query?: string }>
 }) {
-  const { query = '' } = await searchParams
+  const { query = '' } = searchParams ? await searchParams : {}
 
   return (
     <div className="w-full">

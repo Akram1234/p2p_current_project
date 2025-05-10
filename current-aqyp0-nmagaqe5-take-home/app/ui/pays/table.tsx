@@ -1,8 +1,7 @@
 // app/ui/pays/table.tsx
 
-'use client'
+export const dynamic = 'force-dynamic'; // Always fetch fresh data
 
-import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { UpdatePay, DeletePay } from '@/app/ui/pays/buttons'
@@ -21,7 +20,7 @@ export interface PaysTableRow {
   description?: string
 }
 
-export default function PaysTable({
+export default async function PaysTable({
   query,
   currentPage,
   totalPages,
@@ -30,87 +29,24 @@ export default function PaysTable({
   currentPage: number
   totalPages?: number
 }) {
-  const [pays, setPays] = useState<PaysTableRow[]>([])
-  const [loading, setLoading] = useState(true)
-  const [startDate, setStartDate] = useState<string>('')
-  const [endDate, setEndDate] = useState<string>('')
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
+  // Fetch and sort data
+  const raw = await fetchFilteredPays(query, currentPage)
+  raw.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
 
-  useEffect(() => {
-    setLoading(true)
-    fetchFilteredPays(query, currentPage)
-      .then((data: PaysTableRow[]) => {
-        let filtered = data
-        // apply date filters
-        if (startDate) {
-          const start = new Date(startDate)
-          filtered = filtered.filter((p) => new Date(p.date) >= start)
-        }
-        if (endDate) {
-          const end = new Date(endDate)
-          filtered = filtered.filter((p) => new Date(p.date) <= end)
-        }
-        // sort by date
-        filtered.sort((a, b) => {
-          const da = new Date(a.date).getTime()
-          const db = new Date(b.date).getTime()
-          return sortOrder === 'asc' ? da - db : db - da
-        })
-        setPays(filtered)
-      })
-      .finally(() => setLoading(false))
-  }, [query, currentPage, startDate, endDate, sortOrder])
-
-  if (loading) {
-    return <p className="p-4 text-center text-gray-500">Loading...</p>
-  }
+  const pays: PaysTableRow[] = raw.map((p) => ({
+    id:          p.id,
+    contact_id:  p.contact_id,
+    name:        p.name,
+    email:       p.email,
+    image_url:   p.image_url,
+    date:        p.date,
+    amount:      p.amount,
+    status:      p.status as 'paid' | 'pending',
+    description: p.description,
+  }))
 
   return (
     <div className="mt-6 flow-root">
-      {/* Filters */}
-      <div className="flex flex-col gap-4 px-4 mb-4">
-        <div className="flex flex-wrap gap-4">
-          {/* Date From */}
-          <div>
-            <label className="block text-sm font-medium">
-              From:
-              <input
-                type="date"
-                value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
-                className="mt-1 block rounded-md border-gray-300 shadow-sm"
-              />
-            </label>
-          </div>
-          {/* Date To */}
-          <div>
-            <label className="block text-sm font-medium">
-              To:
-              <input
-                type="date"
-                value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
-                className="mt-1 block rounded-md border-gray-300 shadow-sm"
-              />
-            </label>
-          </div>
-          {/* Sort Order */}
-          <div>
-            <label className="block text-sm font-medium">
-              Sort by Date:
-              <select
-                value={sortOrder}
-                onChange={(e) => setSortOrder(e.target.value as 'asc' | 'desc')}
-                className="mt-1 block rounded-md border-gray-300 shadow-sm"
-              >
-                <option value="desc">Newest First</option>
-                <option value="asc">Oldest First</option>
-              </select>
-            </label>
-          </div>
-        </div>
-      </div>
-
       <div className="inline-block min-w-full align-middle">
         <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
 
@@ -172,9 +108,7 @@ export default function PaysTable({
                     <span>{pay.name}</span>
                   </td>
                   <td className="whitespace-nowrap px-4 py-3">{pay.email}</td>
-                  <td className="whitespace-nowrap px-4 py-3 text-right">
-                    {formatCurrency(pay.amount)}
-                  </td>
+                  <td className="whitespace-nowrap px-4 py-3 text-right">{formatCurrency(pay.amount)}</td>
                   <td className="whitespace-nowrap px-4 py-3">{new Date(pay.date).toLocaleDateString()}</td>
                   <td className="whitespace-nowrap px-4 py-3 capitalize">{pay.status}</td>
                   <td className="whitespace-nowrap px-4 py-3 text-center flex justify-center gap-2">
@@ -186,28 +120,42 @@ export default function PaysTable({
             </tbody>
           </table>
 
-          {/* Pagination Controls */}
+          {/* Pagination Controls: only Previous, current page, Next */}
           {totalPages && (
-            <div className="mt-4 flex justify-center items-center gap-2">
+            <div className="mt-4 flex justify-center items-center gap-4">
               <Link
-                href={`?query=${encodeURIComponent(query)}&page=${currentPage - 1}`}
-                className={`px-3 py-1 rounded ${currentPage === 1 ? 'bg-gray-200 text-gray-500 cursor-not-allowed' : 'bg-blue-500 text-white hover:bg-blue-600'}`}
+                href={`/dashboard/pays?query=${encodeURIComponent(query)}&page=${Math.max(
+                  currentPage - 1,
+                  1
+                )}`}
+                className={`px-3 py-1 rounded ${
+                  currentPage === 1
+                    ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                    : 'bg-blue-500 text-white hover:bg-blue-600'
+                }`}
                 aria-disabled={currentPage === 1}
-              >Previous</Link>
+              >
+                Previous
+              </Link>
 
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                <Link
-                  key={page}
-                  href={`?query=${encodeURIComponent(query)}&page=${page}`}
-                  className={`px-3 py-1 rounded ${page === currentPage ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'}`}
-                >{page}</Link>
-              ))}
+              <span className="text-sm font-medium">
+                {currentPage} of {totalPages}
+              </span>
 
               <Link
-                href={`?query=${encodeURIComponent(query)}&page=${currentPage + 1}`}
-                className={`px-3 py-1 rounded ${currentPage === totalPages ? 'bg-gray-200 text-gray-500 cursor-not-allowed' : 'bg-blue-500 text-white hover:bg-blue-600'}`}
+                href={`/dashboard/pays?query=${encodeURIComponent(query)}&page=${Math.min(
+                  currentPage + 1,
+                  totalPages
+                )}`}
+                className={`px-3 py-1 rounded ${
+                  currentPage === totalPages
+                    ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                    : 'bg-blue-500 text-white hover:bg-blue-600'
+                }`}
                 aria-disabled={currentPage === totalPages}
-              >Next</Link>
+              >
+                Next
+              </Link>
             </div>
           )}
 

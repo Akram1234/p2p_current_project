@@ -79,6 +79,7 @@ export async function fetchCardData() {
     ])
 
     const numberOfPays     = pays.length
+    
     const numberOfContacts = contacts.length
     const paidPays    = pays.reduce((sum, p) => (p.status === 'completed' ? sum + p.amount : sum), 0)
     const pendingPays = pays.reduce((sum, p) => (p.status === 'pending'   ? sum + p.amount : sum), 0)
@@ -101,8 +102,9 @@ export async function fetchCardData() {
 export async function fetchFilteredPays(query: string, currentPage: number) {
   try {
     await new Promise((resolve) => setTimeout(resolve, getRandomMillis(3)))
-
+console.log('fetchFilteredPays');
     const lcQuery = query.trim().toLowerCase()
+    console.log('lcQuery', lcQuery);
     let filtered = pays.filter((p) => {
       const r = contacts.find((c) => c.id === p.receiverId)
       if (!r) return false
@@ -112,7 +114,7 @@ export async function fetchFilteredPays(query: string, currentPage: number) {
         (p.description ?? '').toLowerCase().includes(lcQuery)
       )
     })
-
+ console.log('filtered', filtered);
     filtered.sort((a,b) => 
       new Date(b.date).getTime() - new Date(a.date).getTime()
     )
@@ -120,7 +122,7 @@ export async function fetchFilteredPays(query: string, currentPage: number) {
     const offset = (currentPage - 1) * ITEMS_PER_PAGE
     const pageSet = filtered.slice(offset, offset + ITEMS_PER_PAGE)
 
-    return pageSet.map((p) => {
+    const payPageSet=pageSet.map((p) => {
       const r = contacts.find((c) => c.id === p.receiverId)!
       return {
         id:         p.id,
@@ -134,6 +136,8 @@ export async function fetchFilteredPays(query: string, currentPage: number) {
         description:p.description,
       }
     })
+ console.log('payPageSet', payPageSet);
+    return payPageSet
   } catch (error) {
     console.error('Database Error:', error)
     throw new Error('Failed to fetch pays.')

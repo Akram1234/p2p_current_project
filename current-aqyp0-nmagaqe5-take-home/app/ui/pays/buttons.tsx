@@ -1,6 +1,6 @@
 import { PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
-
+import { deletePay ,updatePay} from '@/app/lib/actions'
 export function CreatePay() {
   return (
     <Link
@@ -13,24 +13,34 @@ export function CreatePay() {
   );
 }
 
-export function UpdatePay({ id }: { id: string }) {
-  return (
-    <Link
-      href="/dashboard/pays"
-      className="rounded-md border p-2 hover:bg-gray-100"
-    >
-      <PencilIcon className="w-5" />
-    </Link>
-  );
+interface ButtonProps {
+  id: string
 }
 
-export function DeletePay({ id }: { id: string }) {
+export function UpdatePay({ id }: ButtonProps) {
   return (
-    <>
-      <button className="rounded-md border p-2 hover:bg-gray-100">
-        <span className="sr-only">Delete</span>
-        <TrashIcon className="w-5" />
+    <Link
+     href={`/dashboard/pays/${id}/edit`}
+     className="text-gray-600 hover:text-gray-800"
+     aria-label="Edit payment"
+  >
+     <PencilIcon className="h-5 w-5" />
+    </Link>
+ )
+}
+
+
+export function DeletePay({ id }: ButtonProps) {
+  return (
+    <form action={deletePay} method="post">
+      <input type="hidden" name="id" value={id} />
+      <button
+        type="submit"
+        className="text-red-600 hover:text-red-800"
+        aria-label="Delete payment"
+      >
+        <TrashIcon className="h-5 w-5" />
       </button>
-    </>
-  );
+    </form>
+  )
 }
