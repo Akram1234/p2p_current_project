@@ -18,7 +18,17 @@ export type Contact = {
 
 export type Pay = {
   id: string;
-  // TODO: build out what other fields this should have
+  // who sent the money
+  senderId: string;
+  // who received it
+  receiverId: string;
+  amount: number;
+  // ISO timestamp
+  date: string;
+  // you can expand these statuses as desired
+  status: 'completed' | 'pending' | 'failed';
+  // optional memo
+  description?: string;
 };
 
 export type Activity = {
@@ -76,9 +86,13 @@ export type ContactField = {
 };
 
 export type PayForm = {
-  id: string;
-  contact_id: string;
+  // optional on create
+  id?: string;
+
+  senderId: string;
+  receiverId: string;
   amount: number;
-  // TODO: more here
-  status: 'pending' | 'paid';
+  date: string;
+  status: 'completed' | 'pending' | 'failed';
+  description?: string;
 };
