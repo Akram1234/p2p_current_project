@@ -1,5 +1,3 @@
-// app/ui/pays/edit-form.tsx
-
 'use client'
 
 import { ContactField, PayForm } from '@/app/lib/definitions'

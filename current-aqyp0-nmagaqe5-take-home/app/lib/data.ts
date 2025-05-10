@@ -10,21 +10,17 @@ function getRandomMillis(max: number) {
 
 export async function fetchActivity(): Promise<Activity[]> {
   try {
-    // simulate latency
     await new Promise((r) => setTimeout(r, getRandomMillis(3)))
 
     const now = new Date()
 
-    // build an array of the last 12 months, oldest first
     const result: Activity[] = []
     for (let i = 11; i >= 0; i--) {
-      // monthOffset = how many months before now
       const d = new Date(now.getFullYear(), now.getMonth() - i, 1)
-      const monthLabel = d.toLocaleString('default', { month: 'short' })  // e.g. "May"
+      const monthLabel = d.toLocaleString('default', { month: 'short' })
       const year       = d.getFullYear()
       const monthIndex = d.getMonth()
 
-      // count pays whose date falls in this year & month
       const count = pays.reduce((sum, p) => {
         const pd = new Date(p.date)
         return pd.getFullYear() === year && pd.getMonth() === monthIndex
@@ -45,7 +41,6 @@ export async function fetchActivity(): Promise<Activity[]> {
 export async function fetchLatestPays(count = 5) {
   try {
     await new Promise((resolve) => setTimeout(resolve, getRandomMillis(3)))
-    console.log('ALL PAYS:', pays.length, pays.slice(-5));
   
 
     const recent= pays
@@ -71,7 +66,6 @@ export async function fetchLatestPays(count = 5) {
 
 export async function fetchCardData() {
   try {
-    // simulate parallel fetches
     await Promise.all([
       new Promise((r) => setTimeout(r, getRandomMillis(3))),
       new Promise((r) => setTimeout(r, getRandomMillis(3))),
@@ -102,9 +96,7 @@ export async function fetchCardData() {
 export async function fetchFilteredPays(query: string, currentPage: number) {
   try {
     await new Promise((resolve) => setTimeout(resolve, getRandomMillis(3)))
-console.log('fetchFilteredPays');
     const lcQuery = query.trim().toLowerCase()
-    console.log('lcQuery', lcQuery);
     let filtered = pays.filter((p) => {
       const r = contacts.find((c) => c.id === p.receiverId)
       if (!r) return false
@@ -114,7 +106,6 @@ console.log('fetchFilteredPays');
         (p.description ?? '').toLowerCase().includes(lcQuery)
       )
     })
- console.log('filtered', filtered);
     filtered.sort((a,b) => 
       new Date(b.date).getTime() - new Date(a.date).getTime()
     )
@@ -136,7 +127,6 @@ console.log('fetchFilteredPays');
         description:p.description,
       }
     })
- console.log('payPageSet', payPageSet);
     return payPageSet
   } catch (error) {
     console.error('Database Error:', error)

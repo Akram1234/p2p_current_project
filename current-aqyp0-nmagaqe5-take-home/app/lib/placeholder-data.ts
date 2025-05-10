@@ -1,6 +1,5 @@
 import type { Contact, Pay, Activity } from './definitions'
-// This file contains placeholder data that you'll be replacing with real data in the Data Fetching chapter:
-// https://nextjs.org/learn/dashboard-app/fetching-data
+
 const users = [
   {
     id: '410544b2-4001-4271-9855-fec4b6a6442a',
@@ -57,7 +56,6 @@ function randomInt(min: number, max: number): number {
 function randomDate(): Date {
   const now = new Date()
 
-  // compute the start of *today* (midnight)
   const startOfToday = new Date(
     now.getFullYear(),
     now.getMonth(),
@@ -65,14 +63,11 @@ function randomDate(): Date {
     0, 0, 0, 0
   )
 
-  // compute exactly one year before that
   const oneYearAgo = new Date(startOfToday)
   oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1)
 
-  // our upper bound is the millisecond just before today
   const endOfYesterday = startOfToday.getTime() - 1
 
-  // pick a random timestamp in [oneYearAgo, endOfYesterday]
   const ts = randomInt(oneYearAgo.getTime(), endOfYesterday)
 
   return new Date(ts)
@@ -80,14 +75,13 @@ function randomDate(): Date {
 
 export function generatePays(
   contacts: Contact[],
-  totalCount = 500   // or however many you want in your 12‑month window
+  totalCount = 500   
 ): Pay[] {
   const pays: Pay[] = []
   const statuses: Pay['status'][] = ['completed', 'pending', 'failed']
   const descriptions = ['Rent', 'Utilities', 'Dinner', 'Gift', 'Subscription']
 
   for (let i = 1; i <= totalCount; i++) {
-    // pick two different contacts
     const sender   = contacts[randomInt(0, contacts.length - 1)]
     let receiver   = contacts[randomInt(0, contacts.length - 1)]
     while (receiver.id === sender.id) {
@@ -111,24 +105,15 @@ export function generatePays(
 
   return pays
 }
-// TODO: Generate a years worth of random pays using the contacts above
 declare global {
-  // eslint-disable-next-line no-var
   var __P2P_PAYS__: Pay[] | undefined
 }
-//  globalThis.__P2P_PAYS__ ??=
-// force the next import of placeholder‑data.ts to regenerate
-// delete globalThis.__P2P_PAYS__;
 
 const pays: Pay[] =globalThis.__P2P_PAYS__ ??=generatePays(contacts)
-
-// TODO: After you generate pays, calculate the activity for the respective months
-
 
 const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
 
 const activity: Activity[] = MONTHS.map((month, idx) => {
-  // count how many pays happened in this month
   const count = pays.filter(p => new Date(p.date).getMonth() === idx).length
   return { month, activity: count }
 })

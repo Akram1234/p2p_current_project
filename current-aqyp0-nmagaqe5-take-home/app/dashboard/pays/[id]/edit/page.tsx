@@ -1,10 +1,7 @@
-// app/dashboard/pays/[id]/edit/page.tsx
-
 import Breadcrumbs from '@/app/ui/pays/breadcrumbs'
 import EditPayForm from '@/app/ui/pays/edit-form'
 import { fetchPayById, fetchContacts } from '@/app/lib/data'
 
-// Dynamic edit page for a specific pay
 export default async function Page({ params }: any) {
   const { id } = params
   const [pay, contacts] = await Promise.all([

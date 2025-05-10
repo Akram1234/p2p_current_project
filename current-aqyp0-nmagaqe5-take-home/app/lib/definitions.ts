@@ -1,7 +1,3 @@
-// This file contains type definitions for your data.
-// It describes the shape of the data, and what data type each property should accept.
-// For simplicity of teaching, we're manually defining these types.
-// However, these types are generated automatically if you're using an ORM such as Prisma.
 export type User = {
   id: string;
   name: string;
@@ -18,16 +14,11 @@ export type Contact = {
 
 export type Pay = {
   id: string;
-  // who sent the money
   senderId: string;
-  // who received it
   receiverId: string;
   amount: number;
-  // ISO timestamp
   date: string;
-  // you can expand these statuses as desired
   status: 'completed' | 'pending' | 'failed';
-  // optional memo
   description?: string;
 };
 
@@ -44,7 +35,6 @@ export type LatestPay = {
   amount: string;
 };
 
-// The database returns a number for amount, but we later format it to a string with the formatCurrency function
 export type LatestPayRaw = Omit<LatestPay, 'amount'> & {
   amount: number;
 };
@@ -86,7 +76,6 @@ export type ContactField = {
 };
 
 export type PayForm = {
-  // optional on create
   id?: string;
 
   senderId: string;

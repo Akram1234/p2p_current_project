@@ -1,7 +1,3 @@
-// app/dashboard/pays/page.tsx
-
-// app/dashboard/pays/page.tsx
-
 import Search from '@/app/ui/search'
 import Table from '@/app/ui/pays/table'
 import { CreatePay } from '@/app/ui/pays/buttons'
@@ -15,11 +11,9 @@ export default async function Page({
 }: {
   searchParams?: Promise<{ query?: string; page?: string }>
 }) {
-  // extract query and page from searchParams
   const { query = '', page = '1' } = searchParams ? await searchParams : {}
   const currentPage = Number(page) || 1
 
-  // pre-fetch total pages (passed into Table)
   const totalPages = await fetchPaysPages(query)
 
   return (

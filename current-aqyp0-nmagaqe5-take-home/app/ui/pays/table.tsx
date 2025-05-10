@@ -1,6 +1,4 @@
-// app/ui/pays/table.tsx
-
-export const dynamic = 'force-dynamic'; // Always fetch fresh data
+export const dynamic = 'force-dynamic'; 
 
 import Image from 'next/image'
 import Link from 'next/link'
@@ -30,7 +28,6 @@ export default async function PaysTable({
   currentPage: number
   totalPages?: number
 }) {
-  // Fetch and sort data
   const raw = await fetchFilteredPays(query, currentPage)
   raw.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
 
@@ -45,7 +42,6 @@ export default async function PaysTable({
     status:      p.status as 'paid' | 'pending',
     description: p.description,
   }))
-console.log('pays'+pays)
   return (
     <div className="mt-6 flow-root">
       <div className="inline-block min-w-full align-middle">

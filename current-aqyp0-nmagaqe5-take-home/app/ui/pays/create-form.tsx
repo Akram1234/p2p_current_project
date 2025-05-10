@@ -12,7 +12,6 @@ import { Button } from '@/app/ui/button'
 import { createPay } from '@/app/lib/actions'
 
 export default function Form({ contacts }: { contacts: ContactField[] }) {
-  // default today’s date in YYYY‑MM‑DD for the date input
   const today = new Date().toISOString().slice(0, 10)
 
   return (
