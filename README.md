@@ -114,11 +114,6 @@ CPay is a Peer-to-Peer (P2P) payment application that allows users to manage pay
 - **Mobile View**: A compact, card-based layout for mobile devices.
 - **Desktop View**: A table-based layout for larger screens.
 
-### 5. **Server-Side API**
-- **Group Payment API**: A dedicated API endpoint to handle group payment submissions.
-  - Processes payments and stores them in the system.
-- **Payment Data Fetching**: Server-side logic to fetch and filter payment data based on user queries and date ranges.
-
 ---
 
 ## Author
