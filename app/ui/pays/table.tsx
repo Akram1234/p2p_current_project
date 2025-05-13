@@ -4,8 +4,9 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { UpdatePay, DeletePay } from '@/app/ui/pays/buttons'
 import { fetchFilteredPays } from '@/app/lib/data'
-import { formatCurrency } from '@/app/lib/utils'
+import { formatCurrency,formatDateToLocal } from '@/app/lib/utils'
 import { Console } from 'console';
+import { format } from 'date-fns';
 
 export interface PaysTableRow {
   id: string
@@ -68,7 +69,7 @@ export default async function PaysTable({
                 </div>
                 <div className="mt-2 space-y-1 text-sm">
                   <div><strong>Amount:</strong> {formatCurrency(pay.amount)}</div>
-                  <div><strong>Date:</strong> {new Date(pay.date).toLocaleDateString()}</div>
+                  <div><strong>Date:</strong> {formatDateToLocal(pay.date)}</div>
                   <div><strong>Status:</strong> {pay.status}</div>
                 </div>
                 <div className="mt-4 flex justify-end gap-2">
@@ -106,7 +107,7 @@ export default async function PaysTable({
                   </td>
                   <td className="whitespace-nowrap px-4 py-3">{pay.email}</td>
                   <td className="whitespace-nowrap px-4 py-3 text-right">{formatCurrency(pay.amount)}</td>
-                  <td className="whitespace-nowrap px-4 py-3">{new Date(pay.date).toLocaleDateString()}</td>
+                  <td className="whitespace-nowrap px-4 py-3">{format(new Date(pay.date), 'M/d/yyyy')}</td>
                   <td className="whitespace-nowrap px-4 py-3 capitalize">{pay.status}</td>
                   <td className="whitespace-nowrap px-4 py-3 text-center flex justify-center gap-2">
                     <UpdatePay id={pay.id} />

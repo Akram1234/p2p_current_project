@@ -1,3 +1,6 @@
+## By Akram Mohammad
+
+
 ## CPay App
 
 This is the starter template from the Next.js App Router Course. It contains the starting code for the dashboard application modified for our take home exercise purposes.
@@ -61,12 +64,63 @@ There are `TODO`s. Try to get to them all.
 
 # Candidate README
 ## Bootstrap instructions
-*Replace this: To run this locally, do the following (if anything)*
+To run this project locally, follow these steps:
 
-## Design considerations
-*Replace this: I decided to build X for Y reasons...*
+1. **Clone the Repository**:
+   ```bash
+   git clone https://github.com/your-username/p2p-payment-app.git
+   cd p2p-payment-app
+2. **Install Dependencies: Make sure you have Node.js (v18.18.0 or higher) installed. Then, run**:
+npm install
 
-- Wallets
-- Amount
-- Potential enhancements
-- Miscellaneous
+4. **To Build :**
+npm run build
+
+5. **To Run :**
+npm start
+
+6. **Access the Application: Open your browser and<vscode_annotation details='%5B%7B%22title%22%3A%22hardcoded-credentials%22%2C%22description%22%3A%22Embedding%20credentials%20in%20source%20code%20risks%20unauthorized%20access%22%7D%5D'> navigate</vscode_annotation> to:** 
+http://localhost:3000
+
+
+## CPay App
+
+CPay is a Peer-to-Peer (P2P) payment application that allows users to manage payments, create group payments, and filter transactions by date. It provides a responsive and user-friendly interface for seamless financial transactions.
+
+
+## Features
+
+### 1. **Payment Management**
+- **Create Payment**: Users can create a new payment by providing details such as sender, receiver, amount, date, status, and description.
+  - Automatically replaces `T00:00:00.000Z` dates with the current timestamp.
+- **Update Payment**: Modify existing payment details such as receiver, amount, date, status, and description.
+- **Delete Payment**: Remove a payment from the system by specifying its ID.
+
+### 2. **Group Payments**
+- **Create Group Payment**: Users can create a group payment by:
+  - Selecting multiple recipients.
+  - Specifying the total amount.
+  - Splitting the amount equally or unequally among recipients.
+- **Flexible Splitting Options**:
+  - Split equally among all recipients.
+  - Assign custom amounts to each recipient.
+
+### 3. **Date Filtering**
+- **Filter Payments by Date**: Users can filter payments displayed in the UI by specifying a start and end date.
+  - Payments are displayed in descending order of their date.
+  - Supports dynamic filtering based on user input.
+
+### 4. **Responsive UI**
+- **Mobile View**: A compact, card-based layout for mobile devices.
+- **Desktop View**: A table-based layout for larger screens.
+
+### 5. **Server-Side API**
+- **Group Payment API**: A dedicated API endpoint to handle group payment submissions.
+  - Processes payments and stores them in the system.
+- **Payment Data Fetching**: Server-side logic to fetch and filter payment data based on user queries and date ranges.
+
+---
+
+## Author
+
+**Akram Mohammad**

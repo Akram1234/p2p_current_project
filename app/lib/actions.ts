@@ -27,16 +27,21 @@ export async function createPay(formData: FormData) {
       description: formData.get('description'),
     })
 
+    let finalDate = date
+    if (date.endsWith('T00:00:00.000Z')) {
+      finalDate = new Date().toISOString() // Replace with the current timestamp
+    }
     const newPay: Pay = {
       id:          String(pays.length + 1),
       senderId,
       receiverId,
       amount,
-      date:        new Date(date).toISOString(),
+      date:         finalDate,
       status,
       description,
     }
     pays.push(newPay)
+
     revalidatePath('/dashboard/pays')
     revalidatePath('/dashboard')
   } catch (error) {
@@ -52,7 +57,7 @@ export async function deletePay(formData: FormData) {
   }
 
   revalidatePath('/dashboard/pays')
-
+  revalidatePath('/dashboard')
   redirect('/dashboard/pays')
 }
 
@@ -74,6 +79,6 @@ export async function updatePay(formData: FormData) {
   }
 
   revalidatePath('/dashboard/pays')
-
+  revalidatePath('/dashboard')
   redirect('/dashboard/pays')
 }

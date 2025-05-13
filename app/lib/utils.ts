@@ -1,3 +1,4 @@
+import { parse } from 'path';
 import { Activity } from './definitions';
 
 export const formatCurrency = (amount: number) => {
@@ -7,19 +8,12 @@ export const formatCurrency = (amount: number) => {
   });
 };
 
-export const formatDateToLocal = (
-  dateStr: string,
-  locale: string = 'en-US',
-) => {
-  const date = new Date(dateStr);
-  const options: Intl.DateTimeFormatOptions = {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-  };
-  const formatter = new Intl.DateTimeFormat(locale, options);
-  return formatter.format(date);
-};
+export function formatDateToLocal(dateStr: string): string {
+  const date = new Date(dateStr)
+  return date.toLocaleDateString('en-US', {
+    timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone, 
+  })
+}
 
 export const generateYAxis = (activity: Activity[]) => {
   const yAxisLabels: string[] = []
