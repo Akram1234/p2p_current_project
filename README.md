@@ -79,7 +79,7 @@ npm run build
 5. **To Run :**
 npm start
 
-6. **Access the Application: Open your browser and<vscode_annotation details='%5B%7B%22title%22%3A%22hardcoded-credentials%22%2C%22description%22%3A%22Embedding%20credentials%20in%20source%20code%20risks%20unauthorized%20access%22%7D%5D'> navigate</vscode_annotation> to:** 
+6. **Access the Application: Open your browser and navigate to:** 
 http://localhost:3000
 
 
