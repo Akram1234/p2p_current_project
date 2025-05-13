@@ -68,8 +68,8 @@ To run this project locally, follow these steps:
 
 1. **Clone the Repository**:
    ```bash
-   git clone https://github.com/your-username/p2p-payment-app.git
-   cd p2p-payment-app
+   git clone https://github.com/akram1234/p2p_current_project.git
+   cd p2p_current_project
 2. **Install Dependencies: Make sure you have Node.js (v18.18.0 or higher) installed. Then, run**:
 npm install
 
