@@ -96,21 +96,7 @@ CPay is a Peer-to-Peer (P2P) payment application that allows users to manage pay
 - **Update Payment**: Modify existing payment details such as receiver, amount, date, status, and description.
 - **Delete Payment**: Remove a payment from the system by specifying its ID.
 
-### 2. **Group Payments**
-- **Create Group Payment**: Users can create a group payment by:
-  - Selecting multiple recipients.
-  - Specifying the total amount.
-  - Splitting the amount equally or unequally among recipients.
-- **Flexible Splitting Options**:
-  - Split equally among all recipients.
-  - Assign custom amounts to each recipient.
-
-### 3. **Date Filtering**
-- **Filter Payments by Date**: Users can filter payments displayed in the UI by specifying a start and end date.
-  - Payments are displayed in descending order of their date.
-  - Supports dynamic filtering based on user input.
-
-### 4. **Responsive UI**
+### 2. **Responsive UI**
 - **Mobile View**: A compact, card-based layout for mobile devices.
 - **Desktop View**: A table-based layout for larger screens.
 
